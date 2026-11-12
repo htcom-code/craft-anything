@@ -723,6 +723,16 @@ Owner: open · Status: in progress
       a per-user Flatpak browser in `~/.local/share/flatpak/exports/bin` is found, but its start
       script needs `flatpak`, which the sandbox doesn't have. `flatpak-spawn --host` would need
       `--talk-name=org.freedesktop.Flatpak`, which lets the app run anything outside its sandbox (#841)
+- [x] Ghidra's decompile of one function stops after 120 s: it had no time limit, so a function
+      Ghidra can't bound (an unguarded jump table in a Rust async state machine, #1715) ran for over
+      an hour and every request behind it waited the full 15-minute request time (#1711). The
+      request then falls back to the built-in decompiler. Not run live (no Ghidra here)
+      — claimed: bflatastic, branch bugfix/r1.5-ghidra-decompile-time-limit
+- [ ] Bound unguarded jump tables when Ghidra decompiles a function (#1715): with no bounds check it
+      reads up to 256 entries, follows targets inside other functions and the decompile grows
+      without end. The time limit above stops it; bounding the table would let it finish
+- [ ] Say in the feed while a decompile waits on Ghidra, and for how long, as the one-time analysis
+      does (#1714)
 - [ ] More pins once their hashes are checked against the publisher: Chromium (no published
       checksums found yet), Rizin for Linux (the tar.xz unpacks to ~800 MB, so it needs streaming
       extraction) and macOS (a .pkg)
